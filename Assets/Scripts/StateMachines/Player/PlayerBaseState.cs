@@ -7,6 +7,8 @@ public abstract class PlayerBaseState : State //? By making this abstract we do 
 
     protected PlayerStateMachine stateMachine;  //? protected : only classes that inherit can access
 
+
+    //! Constructor
     public PlayerBaseState(PlayerStateMachine stateMachine) //? Get reference to the PlayerStateMachine via constructor
     {
         this.stateMachine = stateMachine;
