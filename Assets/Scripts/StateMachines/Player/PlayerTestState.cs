@@ -4,26 +4,25 @@ using UnityEngine;
 
 public class PlayerTestState : PlayerBaseState
 {
-    public PlayerTestState(PlayerStateMachine stateMachine) : base(stateMachine) { } //? ... : base(stateMachine) Runs the base implementation of the constructor in PlayerBaseState
-    private float timer;
+    public PlayerTestState(PlayerStateMachine stateMachine) : base(stateMachine) { } //? ... : base(stateMachine) Runs the base implementation of the constructor in PlayerBaseState - https://www.dotnetperls.com/base
 
     public override void Enter()
     {
-        stateMachine.InputReader.JumpEvent += OnJump;
+        // Notice the current stateMachine comes from the base class 'PlayerBaseState'
     }
     public override void Tick(float deltaTime)
     {
-        timer += deltaTime;
-        Debug.Log(timer);
+        Vector3 movement = new Vector3();
+        movement.x = stateMachine.InputReader.MovementValue.x;
+        movement.y = 0;
+        movement.z = stateMachine.InputReader.MovementValue.y;
+        stateMachine.transform.Translate(movement * deltaTime);
     }
 
     public override void Exit()
     {
-        stateMachine.InputReader.JumpEvent -= OnJump;
+
     }
 
-    private void OnJump()
-    {
-        stateMachine.SwitchState(new PlayerTestState(stateMachine));
-    }
+
 }
