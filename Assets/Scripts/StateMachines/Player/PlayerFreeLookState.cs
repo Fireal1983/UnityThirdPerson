@@ -7,6 +7,8 @@ public class PlayerFreeLookState : PlayerBaseState
 
     private readonly int FreeLookSpeedHash = Animator.StringToHash("FreeLookSpeed"); // Strings are slow, Animator has a method to change the string value to a hash
     // readonly : A const would fail here as assignment happens at runtime. ReadOnly means that that once assignment is made in cannot be changed again
+
+    private const float AnimatorDampTime = 0.1f;
     public PlayerFreeLookState(PlayerStateMachine stateMachine) : base(stateMachine) { } //? ... : base(stateMachine) Runs the base implementation of the constructor in PlayerBaseState - https://www.dotnetperls.com/base
 
     public override void Enter()
@@ -15,7 +17,19 @@ public class PlayerFreeLookState : PlayerBaseState
     }
     public override void Tick(float deltaTime)
     {
-        FaceMovementDirection(deltaTime);
+        Vector3 movement = CalculateMovement();
+
+        stateMachine.Controller.Move(movement * stateMachine.FreeLookMovementSpeed * deltaTime);
+
+        if (stateMachine.InputReader.MovementValue == Vector2.zero)
+        {
+            stateMachine.Animator.SetFloat(FreeLookSpeedHash, 0, AnimatorDampTime, deltaTime);
+            return;
+        }
+
+        stateMachine.Animator.SetFloat(FreeLookSpeedHash, 1, AnimatorDampTime, deltaTime);
+
+        FaceMovementDirection(movement, deltaTime);
     }
 
     public override void Exit()
@@ -41,19 +55,11 @@ public class PlayerFreeLookState : PlayerBaseState
         right * stateMachine.InputReader.MovementValue.x;
     }
 
-    private void FaceMovementDirection(float deltaTime)
+    private void FaceMovementDirection(Vector3 movement, float deltaTime)
     {
-        Vector3 movement = CalculateMovement();
-
-        stateMachine.Controller.Move(movement * stateMachine.FreeLookMovementSpeed * deltaTime);
-
-        if (stateMachine.InputReader.MovementValue == Vector2.zero)
-        {
-            stateMachine.Animator.SetFloat(FreeLookSpeedHash, 0, 0.1f, deltaTime);
-            return;
-        }
-
-        stateMachine.Animator.SetFloat(FreeLookSpeedHash, 1, 0.1f, deltaTime);
-        stateMachine.transform.rotation = Quaternion.LookRotation(movement);
+        stateMachine.transform.rotation = Quaternion.Lerp(
+            stateMachine.transform.rotation,
+            Quaternion.LookRotation(movement),
+            deltaTime * stateMachine.RotationDamping);
     }
 }
