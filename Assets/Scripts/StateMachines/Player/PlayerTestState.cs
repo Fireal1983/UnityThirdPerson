@@ -4,9 +4,8 @@ using UnityEngine;
 
 public class PlayerTestState : PlayerBaseState
 {
-    private float timer;
-
     public PlayerTestState(PlayerStateMachine stateMachine) : base(stateMachine) { } //? ... : base(stateMachine) Runs the base implementation of the constructor in PlayerBaseState
+    private float timer;
 
     public override void Enter()
     {
