@@ -7,6 +7,7 @@ public class PlayerStateMachine : StateMachine
     [field: SerializeField] public InputReader InputReader { get; private set; }
     [field: SerializeField] public CharacterController Controller { get; private set; }
     [field: SerializeField] public Animator Animator { get; private set; }
+    [field: SerializeField] public Targeter Targeter { get; private set; }
     [field: SerializeField] public float FreeLookMovementSpeed { get; private set; }
     [field: SerializeField] public float RotationDamping { get; private set; }
 
@@ -17,5 +18,13 @@ public class PlayerStateMachine : StateMachine
 
         SwitchState(new PlayerFreeLookState(this));
     }
-
 }
+
+
+
+
+
+
+//? NOTES
+//  1)  I inherit from state machine
+//  2)  I'm calling my own method switchState, I'm setting the state as PlayerFreeLook and sending myself as the reference for which state machine to use 

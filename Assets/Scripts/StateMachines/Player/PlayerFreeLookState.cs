@@ -14,6 +14,7 @@ public class PlayerFreeLookState : PlayerBaseState
     public override void Enter()
     {
         // Notice the current stateMachine comes from the base class 'PlayerBaseState'
+        stateMachine.InputReader.TargetEvent += OnTarget;   // as soon as we load into PlayerFreeLookState subscribe to events
     }
     public override void Tick(float deltaTime)
     {
@@ -34,7 +35,7 @@ public class PlayerFreeLookState : PlayerBaseState
 
     public override void Exit()
     {
-
+        stateMachine.InputReader.TargetEvent -= OnTarget;
     }
 
     private Vector3 CalculateMovement()
@@ -62,4 +63,17 @@ public class PlayerFreeLookState : PlayerBaseState
             Quaternion.LookRotation(movement),
             deltaTime * stateMachine.RotationDamping);
     }
+
+    private void OnTarget()
+    {
+        if (!stateMachine.Targeter.SelectTarget()) { return; }
+
+        stateMachine.SwitchState(new PlayerTargetingState(stateMachine));
+    }
 }
+
+
+//? NOTES
+//  3)  The PlayerStateMachine class invoked me and passed me itself as the paramater for my constructor, which I received from my base parent class PlayerBaseState
+//  4)  While the details of my constructor are hidden though abstraction I will assign the statemachine variable passed to me by my parent to PlayerStateMachine
+//  5)  I will now b

@@ -12,7 +12,12 @@ public abstract class PlayerBaseState : State //? By making this abstract we do 
     public PlayerBaseState(PlayerStateMachine stateMachine) //? Get reference to the PlayerStateMachine via constructor
     {
         this.stateMachine = stateMachine;
-    }   // Essentially we swap this code for the inheriting classes implementation of State - Enter(), Tick() etc.
+    }   
 
 
 }
+
+
+//? NOTES
+//  1)  I inherit from state machine
+//  2)  I'm calling my own method switchState, I'm setting the state as PlayerFreeLook and sending myself as the reference for which state machine to use 
